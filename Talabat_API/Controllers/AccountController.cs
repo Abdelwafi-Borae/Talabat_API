@@ -3,6 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 //using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Data.ModelViews;
 using Data.Repositories.Account;
+using Microsoft.AspNetCore.Identity.Data;
+using Tawtheiq.Application.Common.Models;
+using Data.Model;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Tawtheiq.Application.Cores.Identity.Dtos.Respones;
+using System.Security.Principal;
 
 namespace Controllers
 {
@@ -10,63 +16,40 @@ namespace Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly IServiceAccount<DtoRegister> _register;
-        private readonly IServiceAccount<DtoLogin> _login;
-        public AccountController(IServiceAccount<DtoRegister> register, IServiceAccount<DtoLogin> login)
+        private readonly IIdentityService _Identity;
+         
+        public AccountController(IIdentityService Identity)
         {
-            _register = register;
-            _login = login;
+            _Identity = Identity;
+           
         }
 
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register(DtoRegister register)
+        
+        [HttpPost("RegisterAsync")]
+        [ProducesResponseType(typeof(GenericResult<ModelError>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(GenericResult<object>), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(GenericResult<object>), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(typeof(GenericResult<object>), StatusCodes.Status500InternalServerError)]
+        //public async Task<IActionResult> Register(DtoRegister register)
+        public async Task<GenericResult<ApplicationUser>> RegisterAsync(DtoRegister register)
         {
-            if (ModelState.IsValid)
-            {
-                ModelError modelError = await _register.Add(register);
-                if (!modelError.IsError)
-                {
-                    // user register success
-                    return Ok(register);
-                }else if(modelError.IsError && modelError.identityErrors == null)
-                {
-                    ModelState.AddModelError("Error", modelError.Message??"Error");
-                }
-                else
-                {
-                    foreach (var item in modelError.identityErrors!)
-                    {
-                        ModelState.AddModelError("Error", item.Description);
-                    }
-                }
-            }
-            return BadRequest(ModelState);
+
+            var result = await _Identity.RegisterAsync(register);
+           
+            Response.StatusCode = StatusCodes.Status201Created;
+            return result.ToCreatedResult();
+
+            
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(DtoLogin login)
+        public async Task<GenericResult<TokenResponse>> Login(DtoLogin login)
         {
-            if (ModelState.IsValid)
-            {
-                ModelError modelError = await _login.Add(login);
-                if (!modelError.IsError)
-                {
-                    // user register success
-                    return Ok(modelError);
-                }
-                else if (modelError.IsError && modelError.identityErrors == null)
-                {
-                    ModelState.AddModelError("Error", modelError.Message ?? "Error");
-                }
-                else
-                {
-                    foreach (var item in modelError.identityErrors!)
-                    {
-                        ModelState.AddModelError("Error", item.Description);
-                    }
-                }
-            }
-            return BadRequest(ModelState);
+            var Result = await _Identity.Login(login);
+
+            Response.StatusCode = StatusCodes.Status201Created;
+            return Result.ToCreatedResult();
+            
         }
 
     }
