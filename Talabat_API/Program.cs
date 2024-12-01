@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Talabat_API.Service;
 using TalabatWebAspDotNetCoreApi.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+var environment = builder.Environment.EnvironmentName;
+Console.WriteLine($"Environment: {environment}");
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -25,13 +27,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // register role based authorization
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddRoles<IdentityRole>()
-    .AddRoleManager<RoleManager<IdentityRole>>()
+    .AddRoleManager<RoleManager<IdentityRole>>() 
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-// register (IServiceAccount, Register) and (IServiceAccount , Login)
-builder.Services.AddScoped<IServiceAccount<DtoRegister>, Register>();
-builder.Services.AddScoped<IServiceAccount<DtoLogin>, Login>();
+
+//builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddServices(builder.Configuration);
 
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>

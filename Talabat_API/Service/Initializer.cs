@@ -22,6 +22,9 @@ namespace TalabatWebAspDotNetCoreApi.Service
                 {
                     await roleManager.CreateAsync(new IdentityRole(role));
                 }
+
+          
+
             }
         }
     }

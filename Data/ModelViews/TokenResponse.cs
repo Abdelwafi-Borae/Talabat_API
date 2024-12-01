@@ -1,2 +1,2 @@
-﻿namespace Tawtheiq.Application.Cores.Identity.Dtos.Respones;
+﻿namespace Data.ModelViews;
 public record TokenResponse(string Token, DateTime? TokenExpiryTime, string UserId = "");

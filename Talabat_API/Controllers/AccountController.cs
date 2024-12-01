@@ -1,14 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 //using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Data.ModelViews;
 using Data.Repositories.Account;
-using Microsoft.AspNetCore.Identity.Data;
 using Tawtheiq.Application.Common.Models;
 using Data.Model;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Tawtheiq.Application.Cores.Identity.Dtos.Respones;
-using System.Security.Principal;
 
 namespace Controllers
 {
@@ -30,7 +25,6 @@ namespace Controllers
         [ProducesResponseType(typeof(GenericResult<object>), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(GenericResult<object>), StatusCodes.Status422UnprocessableEntity)]
         [ProducesResponseType(typeof(GenericResult<object>), StatusCodes.Status500InternalServerError)]
-        //public async Task<IActionResult> Register(DtoRegister register)
         public async Task<GenericResult<ApplicationUser>> RegisterAsync(DtoRegister register)
         {
 
@@ -41,7 +35,10 @@ namespace Controllers
 
             
         }
-
+        [ProducesResponseType(typeof(GenericResult<TokenResponse>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(GenericResult<object>), StatusCodes.Status409Conflict)]
+        [ProducesResponseType(typeof(GenericResult<object>), StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(typeof(GenericResult<object>), StatusCodes.Status500InternalServerError)]
         [HttpPost("Login")]
         public async Task<GenericResult<TokenResponse>> Login(DtoLogin login)
         {

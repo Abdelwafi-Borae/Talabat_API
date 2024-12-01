@@ -1,6 +1,5 @@
 ﻿using Data.Model;
 using Data.ModelViews;
-using Tawtheiq.Application.Cores.Identity.Dtos.Respones;
 
 namespace Data.Repositories.Account
 {

@@ -12,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Tawtheiq.Application.Cores.Identity.Dtos.Respones;
+
 using Microsoft.Win32;
 using FluentValidation;
 using Azure.Core;
